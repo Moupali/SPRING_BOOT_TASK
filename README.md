@@ -1,2 +1,2 @@
-Task1:
-Complete all the endpoints for CRUD operations on Muzix
+Task2:
+Use h2-console to view in-memory data
