@@ -1,2 +1,2 @@
-Task1:
-Complete all the endpoints for CRUD operations on Muzix
+Task4:
+Generate API documentation using Swagger 2
