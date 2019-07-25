@@ -24,7 +24,7 @@ public class  TrackController {
     public ResponseEntity<?> saveUser(@RequestBody Track track){
         ResponseEntity responseEntity;
         try{
-            trackService.saveUser(track);
+            trackService.saveTrack(track);
             responseEntity=new ResponseEntity<String>("successfully created", HttpStatus.CREATED);
         }
         catch(UserAlreadyExistsException ex){
