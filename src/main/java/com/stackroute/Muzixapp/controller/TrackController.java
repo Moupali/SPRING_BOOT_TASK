@@ -2,6 +2,7 @@ package com.stackroute.Muzixapp.controller;
 
 import com.stackroute.Muzixapp.domain.Track;
 //import com.stackroute.Muzixapp.exceptions.TrackAlreadyExistsException;
+import com.stackroute.Muzixapp.exception.TrackNotFoundException;
 import com.stackroute.Muzixapp.exception.UserAlreadyExistsException;
 import com.stackroute.Muzixapp.service.TrackService;
 import org.springframework.http.HttpStatus;
@@ -36,7 +37,7 @@ public class  TrackController {
         return new ResponseEntity<List<Track>>(trackService.getAllTracks(),HttpStatus.OK);
     }
     @GetMapping("track/{id}")
-    public ResponseEntity<?> getTrackById(@PathVariable(value="id") int id){
+    public ResponseEntity<?> getTrackById(@PathVariable(value="id") int id) throws TrackNotFoundException {
         return new ResponseEntity<Track>(trackService.getTrackById(id),HttpStatus.OK);
     }
     @DeleteMapping("track/{id}")
