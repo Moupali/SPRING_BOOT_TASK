@@ -72,4 +72,15 @@ public class  TrackController {
         return responseEntity;
     }
 
+    @PostMapping("tracks")
+    public ResponseEntity<?> getTracks(@RequestBody List<Track> track) throws RuntimeException, UserAlreadyExistsException {
+        ResponseEntity responseEntity;
+        for(Track t:track) {
+            trackService.saveTrack(t);
+        }
+        responseEntity = new ResponseEntity<List<Track>>(trackService.getAllTracks(), HttpStatus.CREATED);
+        return responseEntity;
+    }
+
 }
+

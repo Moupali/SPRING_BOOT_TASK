@@ -1,11 +1,12 @@
 package com.stackroute.Muzixapp.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.*;
+import org.apache.catalina.User;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
@@ -14,9 +15,11 @@ import javax.persistence.Id;
 @Builder
 @AllArgsConstructor
 
-public class Track {
+public class Track  {
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     int trackId;
+    @JsonProperty("name")
     String trackName;
     String trackComments;
 
