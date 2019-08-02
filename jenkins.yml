@@ -1,0 +1,22 @@
+creationTimestamp: null
+  labels:
+    run: jenkins
+  name: jenkins
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: jenkins
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        run: jenkins
+    spec:
+      containers:
+      - image: jenkins/jenkins:lts-alpine
+        name: jenkins
+        ports:
+        - containerPort: 8080
+      
