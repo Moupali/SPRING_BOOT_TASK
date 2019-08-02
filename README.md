@@ -1,2 +1,2 @@
-Task1:
-Complete all the endpoints for CRUD operations on Muzix
+Task:
+Completed the Muzix Application using MongoDb Database.
