@@ -1,2 +1,3 @@
-Task1:
-Complete all the endpoints for CRUD operations on Muzix
+TASK:
+
+Completed all the test cases of controller and service class.
