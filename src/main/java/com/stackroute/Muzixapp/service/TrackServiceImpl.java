@@ -66,9 +66,5 @@ public class TrackServiceImpl implements TrackService{
         return trackRepository.save(track);
     }
 
-    /*@Override
-    public List<Track> findByName(String name) {
-        return trackRepository.findByName(name);
-    }*/
 
 }
