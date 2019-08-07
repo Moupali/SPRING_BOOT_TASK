@@ -1,7 +1,6 @@
 package com.stackroute.Muzixapp.controller;
 
 import com.stackroute.Muzixapp.domain.Track;
-//import com.stackroute.Muzixapp.exceptions.TrackAlreadyExistsException;
 import com.stackroute.Muzixapp.exception.UserAlreadyExistsException;
 import com.stackroute.Muzixapp.service.TrackService;
 import org.springframework.http.HttpStatus;
@@ -14,6 +13,8 @@ import java.util.List;
 @RequestMapping(value = "api/v2")
 public class  TrackController {
     TrackService trackService;
+    
+    @Autowired
     public TrackController(TrackService trackService)
     {
         this.trackService=trackService;
