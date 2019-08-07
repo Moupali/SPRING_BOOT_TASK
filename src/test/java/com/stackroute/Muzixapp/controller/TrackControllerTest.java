@@ -1,103 +1,98 @@
-package com.stackroute.Muzixapp.controller;
+package com.stackroute.controller;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.stackroute.Muzixapp.domain.Track;
-import com.stackroute.Muzixapp.exception.UserAlreadyExistsException;
-import com.stackroute.Muzixapp.service.TrackService;
-import org.apache.catalina.User;
-import org.junit.Before;
-import org.junit.Test;
-import java.util.*;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import com.stackroute.domain.Track;
+import com.stackroute.exceptions.TrackAlreadyExistsException;
+import com.stackroute.exceptions.TrackNotFoundException;
+import com.stackroute.repository.TrackRepository;
+import com.stackroute.service.TrackService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-import java.awt.*;
-import java.util.ArrayList;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 
-import static org.junit.Assert.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+@RestController
+@RequestMapping(value="api/v2")
+public class TrackController {
 
-@RunWith(SpringRunner.class)
-@WebMvcTest
-public class TrackControllerTest
-{
-    @Autowired
-    private MockMvc mockMvc;
-    private Track track;
-    @MockBean
-    private TrackService trackService;
-    @InjectMocks
-    private TrackController trackController;
-
-    private List<Track> list=null;
-
-    @Before
-    public void setUp() {
-        MockitoAnnotations.initMocks(this);
-        mockMvc = MockMvcBuilders.standaloneSetup(trackController).build();
-        track = new Track();
-        //track.setTrackId(5);
-       // track.getTrackName("Lag ja gale");
-        //track.getTrackComments("Good");
-        Track  track=new Track(1,"jj","hfgtfty");
-        list = new ArrayList();
-        list.add(track);
+   private TrackService trackService;
+   private TrackRepository trackRepository;
+   private Track track;
+     @Autowired
+    public TrackController(TrackService trackService) {
+        this.trackService = trackService;
     }
 
-    @Test
-    public void saveTrack()throws Exception {
-        when(trackService.saveTrack(any())).thenReturn(track);
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/v2/track")
-                .contentType(MediaType.APPLICATION_JSON).content(asJsonString(track)))
-                .andExpect(MockMvcResultMatchers.status().isCreated())
-                .andDo(MockMvcResultHandlers.print());
-    }
-    @Test
-    public void saveUserFailure() throws Exception {
-        when(trackService.saveTrack(any())).thenThrow(UserAlreadyExistsException.class);
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/v2/track")
-                .contentType(MediaType.APPLICATION_JSON).content(asJsonString(track)))
-                .andExpect(MockMvcResultMatchers.status().isConflict())
-                .andDo(MockMvcResultHandlers.print());
-    }
+    @PostMapping("track")
+    public ResponseEntity<?> saveTrack(@RequestBody Track track) {
 
-    @Test
-    public void getAllUser() throws Exception {
-        when(trackService.getAllTracks()).thenReturn(list);
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/v2/track")
-                .contentType(MediaType.APPLICATION_JSON).content(asJsonString(track)))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andDo(MockMvcResultHandlers.print());
-
-    }
-
-
-    private static String asJsonString(final Object obj)
-    {
-        try{
-            return new ObjectMapper().writeValueAsString(obj);
-
-        }catch(Exception e){
-            throw new RuntimeException(e);
+        ResponseEntity responseEntity;
+        try {
+            trackService.saveTrack(track);
+            responseEntity = new ResponseEntity("Successfully created", HttpStatus.CREATED);
         }
+
+        catch(TrackAlreadyExistsException ex) {
+            responseEntity = new ResponseEntity<String>(ex.getMessage(), HttpStatus.CONFLICT);
+        }
+
+        return responseEntity;
+
     }
 
+    @PostMapping("tracks")
+    public ResponseEntity<?> getTracks(@RequestBody List<Track> track) throws RuntimeException, TrackAlreadyExistsException {
+
+        ResponseEntity responseEntity;
+
+        for(Track t:track) {
+            trackService.saveTrack(t);
+        }
+
+        responseEntity = new ResponseEntity<List<Track>>(trackService.getAllTracks(), HttpStatus.CREATED);
+
+        return responseEntity;
+    }
+
+    @DeleteMapping(value = "/track/{id}")
+    public ResponseEntity<?> deleteTrack(@PathVariable Integer id) throws TrackNotFoundException {
+
+        ResponseEntity responseEntity;
+
+            trackService.deleteTrack(track);
+            responseEntity = new ResponseEntity("Delete Successfull", HttpStatus.OK);
 
 
 
 
+
+        return responseEntity;
+
+    }
+  @PutMapping("/track")
+  public ResponseEntity<?> updateTrack(@RequestBody Track track) throws TrackNotFoundException
+  {
+  ResponseEntity responseEntity;
+
+
+    trackService.updateTrack(track);
+    responseEntity = new ResponseEntity<String>("successfully updated", HttpStatus.CREATED);
+    return responseEntity;
+  }
+
+ 
+    @GetMapping("tracks")
+    public ResponseEntity<?> getAllTracks() {
+        ResponseEntity responseEntity = new ResponseEntity<>(trackService.getAllTracks(), HttpStatus.OK);
+        System.out.println(trackService.getByTrackName("hello").toString());
+        System.out.println(trackService.getByTrackName("hello").toString());
+        return responseEntity;
+
+    }
 
 }
